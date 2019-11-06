@@ -21,8 +21,8 @@ typedef struct _Task {
     int (*TickFct) (int);
 } Task;
 
-const unsigned char tasksSize = 4;
-Task tasks[4];
+const unsigned char tasksSize = 3;
+Task tasks[3];
 const unsigned char tasksPeriod = 1;
 
 volatile unsigned char TimerFlag = 0;
@@ -69,7 +69,6 @@ void TimerSet(unsigned long M) {
 
 unsigned char threeLEDs = 0x04;
 unsigned char blinkLED = 0x08;
-unsigned char speaker = 0x10;
 
 enum TL_States { TL_Start, TL_TL } TL_State;
 int TickFct_ThreeLEDs(int state) {
@@ -129,39 +128,6 @@ int TickFct_BlinkLED(int state) {
     return state;
 }
 
-enum Sp_States { Sp_Start, Sp_Sp } Sp_State;
-int TickFct_Speaker(int state) {
-    switch(state) {
-        case Sp_Start:
-            state = Sp_Sp;
-            break;
-        case Sp_Sp:
-            state = Sp_Sp;
-            break;
-        default:
-            state = Sp_Start;
-            break;
-    }
-
-    switch(state) {
-        case Sp_Start:
-            speaker = 0x10;
-            break;
-        case Sp_Sp:
-            if(~PINA & 0x04) {
-                speaker = speaker ? 0x00 : 0x10;
-            } else {
-                speaker = 0x00;
-            }
-            break;
-        default:
-            speaker = 0x10;
-            break;
-    }
-
-    return state;
-}
-
 enum CL_States { CL_Start, CL_CL } CL_State;
 int TickFct_CombineLED(int state) {
     switch(state) {
@@ -180,7 +146,7 @@ int TickFct_CombineLED(int state) {
         case CL_Start:
             break;
         case CL_CL:
-            PORTB = (threeLEDs | blinkLED | speaker);
+            PORTB = (threeLEDs | blinkLED);
             break;
         default:
             break;
@@ -190,12 +156,11 @@ int TickFct_CombineLED(int state) {
 }
 
 int main(void) {
-    DDRA = 0x00; PORTA = 0xFF;
     DDRB = 0xFF; PORTB = 0x00;
     
     unsigned char i = 0;
     tasks[i].state = TL_Start;
-    tasks[i].period = 300;
+    tasks[i].period = 1000;
     tasks[i].elapsedTime = tasks[i].period;
     tasks[i].TickFct = &TickFct_ThreeLEDs;
     i++;    
@@ -204,13 +169,8 @@ int main(void) {
     tasks[i].elapsedTime = tasks[i].period;
     tasks[i].TickFct = &TickFct_BlinkLED;
     i++;
-    tasks[i].state = Sp_Start;
-    tasks[i].period = 2;
-    tasks[i].elapsedTime = tasks[i].period;
-    tasks[i].TickFct = &TickFct_Speaker;
-    i++;
     tasks[i].state = CL_Start;
-    tasks[i].period = 1;
+    tasks[i].period = 1000;
     tasks[i].elapsedTime = tasks[i].period;
     tasks[i].TickFct = &TickFct_CombineLED;
 
