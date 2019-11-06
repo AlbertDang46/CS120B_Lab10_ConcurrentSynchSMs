@@ -10,6 +10,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include<avr/sleep.h>
 #ifdef _SIMULATE_
 #include "simAVRHeader.h"
 #endif
@@ -178,7 +179,7 @@ int main(void) {
     TimerOn();
 
     while (1) {
-//        sleep();
+        sleep();
     }
     return 0;
 }

@@ -1,7 +1,7 @@
 /*	Author: Albert Dang adang018
  *      Partner(s) Name: Min-Hua Wu mwu057
  *	Lab Section: 022
- *	Assignment: Lab #10  Exercise #1
+ *	Assignment: Lab #10  Exercise #3
  *	Exercise Description: [optional - include for your own benefit]
  *
  *	I acknowledge all content contained herein, excluding template or example
@@ -10,6 +10,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include<avr/sleep.h>
 #ifdef _SIMULATE_
 #include "simAVRHeader.h"
 #endif
@@ -218,7 +219,7 @@ int main(void) {
     TimerOn();
 
     while (1) {
-//        sleep();
+        sleep();
     }
     return 0;
 }
